@@ -153,6 +153,9 @@ public class CalorkOsc {
     }
 }
 
+/*
+// some example code
+// shows how to set up and get params
 
 CalorkOsc c;
 
@@ -179,4 +182,4 @@ while (true) {
     <<< c.getParam("/ed", "/freq") >>>;
     100::ms => now;
 }
-
+*/
