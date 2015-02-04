@@ -1,4 +1,6 @@
 s.boot;
+SCVim.updateCaches;
+( play{ SinOsc.ar( 440, mul: 0.5 ) }; )
 (
 // SET UP PORTS
 ~addr = NetAddr.langPort;
@@ -9,7 +11,7 @@ s.boot;
 (
 // SET UP ADDRESSES
 ~sh = NetAddr( "169.254.74.231", ~addr );
-~justinSC = NetAddr( "169.254.87.91", ~addr );
+~justin = NetAddr( "169.254.87.91", ~addr );
 ~justinMAX = NetAddr( "169.254.87.91", ~addr );
 ~ed = NetAddr( "169.254.24.203", ~addr);
 ~eric = NetAddr( "169.254.249.113", ~addr );
