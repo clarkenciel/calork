@@ -7,15 +7,14 @@ KBHit kb;
 CalorkOsc c;
 
 // set your sending address
-c.myAddr("/eric");
+c.myAddr("/danny");
 
 // add one IP and address at a time, two string arguments
-c.addIp("192.168.1.6", "/nick");
-//c.addIp("192.168.1.10", "/rodrigo");
-//c.addIp("169.254.223.167", "/danny");
-//c.addIp("169.254.207.86", "/mike");
-//c.addIp("169.254.74.231", "/shaurjya");
-//c.addIp("169.254.24.203", "/ed");
+// c.addIp("10.0.0.3", "/jp");
+// c.addIp("10.0.0.4", "/bruce");
+//c.addIp("10.0.0.5", "/mike");
+//c.addIp("10.0.0.2", "/eric");
+//c.addIp("10.0.0.7","/dexter");
 
 // you'll have to setup your parameters as an array of strings
 c.setParams(["/gate", "/freq", "/click", "/oscil", "/mult"]);
@@ -38,14 +37,14 @@ Gain gate[NUM_PLAYERS];
 int begin;
 
 // starting values
-300 => float spd;
+Math.random2(500,1000) => float spd;
 220 => float my_freq;
-10 => float my_click;
 0.0 => float my_oscil;
 1.0 => float my_mult;
+10 => float my_click;
 
 // frequency max and min
-220 => float freq_max;
+240 => float freq_max;
 200 => float freq_min;
 
 // storage for all sine stuffs
@@ -56,7 +55,12 @@ float oscil[NUM_PLAYERS];
 // sound chain set up
 for (int i; i < NUM_PLAYERS; i++) {
     sin[i] => env[i] => dac;
-    sin[i].gain(0.7);
+    sin[i].gain(0.4);
+
+    // initializing arrays
+    1.0 => oscil[i];
+    1.0 => mult[i];
+    10 => click[i];
 }
 
 // cycles backwards or forwards through the players
@@ -105,7 +109,8 @@ fun void input() {
 // prints out instructions
 fun void instructions() {
     if (begin != 1) {
-        // initializes click and mult
+        1 => begin;
+        // initialize parameters
         send("/mult", my_mult);
         send("/click", my_click);
         send("/freq", my_freq);
@@ -126,14 +131,14 @@ fun void instructions() {
 fun void action(int key) {
     // q, speeds up rotation
     if (key == 113) {
-        if (spd > 10) {
-            5 -=> spd;
+        if (spd > 4) {
+            3 -=> spd;
         }
     }
     // a, slows down rotation
     if (key == 97) {
         if (spd < 1000) {
-            5 +=> spd;
+            3 +=> spd;
         }
     }
     // w, raises frequency 
@@ -186,15 +191,16 @@ fun void action(int key) {
     if (key == 32) { 
         instructions();
     }
-
 }
 
 // send to all the players
 fun void send(string param, float val) {
     for (int i; i < NUM_PLAYERS; i++) {
         c.send(players[i], param, val); 
+        10::samp => now;
     }
 }
 
 // main program, press spacebar to start
+<<< "Press spacebar to start:", "" >>>;
 input();
