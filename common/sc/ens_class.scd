@@ -40,51 +40,21 @@
 };
 )
 (
-var new_method;
-var test = {
-	| a, b, c|
-	var one = a;
-	var two = b;
-	var three = c;
+d = (
+    port: NetAddr.langPort, members: Dictionary.new, params: Dictionary.new,
 
-	var methods = (
-        get_one: one,
-        get_two: two,
-        get_three: three
-    ).value();
-
-    var addMethod = {
-        |name, value|
-        methods.name = value;
-    };
-
-    (
-        methods: methods,
-        addMethod: { |new| addMethod( new.getPairs(0), new.getPairs(1) ); }
-    )
-};
-
-t = test.value(1, 2, 3);
-t.methods.addMethod.value( [newmethod: {|i, j| postln(j) }]  );
-t.methods.newmethod.value(2,2);
-
+    new: {
+        |self, members|
+        self.members.putAll( members );
+    },
+    send: {},
+    receive: {}
+);
+d.new([eric: "169.123.123.1"]);
+d.members.at(\eric).postln;
 )
 
 (
-a = Dictionary.new;
-a.add( b -> 0 ).postln;
-a.add( f -> {
-    |input|
-    postln( input );
-});
-a.at( b ).postln;
-a.at( f ).value( 3 );
-)
-
-
-
-
-
-( // stream demo for Zoe
-e = ( a: "b", c: "d", e: "f" ).value();
+d = (hello: 9, whello: 77, z: 99);
+d.getPairs;
 )
