@@ -37,7 +37,6 @@ public class OSCOscIn extends Chugen {
         p => port;
         in.port( port );
     }
-
 }
 
 

@@ -45,6 +45,16 @@ while( ms => now );
 
 // FUNCS
 
+fun void calc() {
+    while( samp => now ) {
+        if( c == len ) { 
+            0 => sb.pos => c;
+        }
+        sb.last() => out.val;
+        c++;
+    }
+}
+
 fun void change() {
     KBHit k;
     "/one, f" => string a1;

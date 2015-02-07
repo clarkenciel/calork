@@ -11,7 +11,7 @@ public class OSCOscOut  {
         g => blackhole;
         while( samp => now ) {
             out.start( addr );
-            out.add( g.last() );
+            out.add( g.last(); );
             out.send();
         }
     }
