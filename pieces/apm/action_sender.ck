@@ -1,5 +1,6 @@
-// Eric Heep
 // APM
+// Eric Heep
+// Calork
 
 "Apple Internal Keyboard / Trackpad" => string keyboardName;
 "USB Optical Mouse" => string mouseName;
