@@ -1,0 +1,3 @@
+1. Pass settings of person along with signal
+2. Remove localhost/"" check to a separate, sporked-off, sender func
+3. improve UI for conductor and parts so that each have a better grasp of the current system state.

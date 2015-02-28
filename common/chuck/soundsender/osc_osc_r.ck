@@ -42,7 +42,6 @@ public class OSCOscIn extends Chugen {
 
 
 //TEST----------------
-/*
 OSCOscIn i => dac;
 
 spork ~ i.listen();
