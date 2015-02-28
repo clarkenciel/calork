@@ -16,6 +16,7 @@ b.set( bFreq, Q ); g.gain( master );
 
 spork ~ r.listen();
 spork ~ s.listen();
+spork ~ s.send();
 
 while( true ) {
     k => now;

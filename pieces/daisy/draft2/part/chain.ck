@@ -3,18 +3,15 @@ public class ChainOut extends Chugen {
     OscMsg msg;
     OscOut out;
     string dest;
+    float sig;
+    1 => int first;
     57120 => int port;
 
     in.port( 57121 );
     in.listenAll();
 
     fun float tick( float in ) {
-        if( dest != "localhost" && dest != "" ) {
-            out.dest( dest, port );
-            out.start( "/chain, f" );
-            out.add( in );
-            out.send();
-        }
+        in => sig;
         return in;
     }
 
@@ -24,9 +21,20 @@ public class ChainOut extends Chugen {
             while( in.recv(msg) ){
                 if( msg.address == "/disconnect" || msg.address == "/connect" ) {
                     msg.getString(0) => dest;
+                    1 => first;
                 }
             }
         }
     }
 
+    fun void send() {
+        while( samp => now ) {
+            if( dest != "localhost" && dest != "" ) {
+                out.dest( dest, port );
+                out.start( "/chain, f" );
+                out.add( sig );
+                out.send();
+            }
+        }
+    }
 }
