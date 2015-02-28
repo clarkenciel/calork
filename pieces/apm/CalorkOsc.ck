@@ -4,7 +4,7 @@
 public class CalorkOsc {
     // sets max number of OscOut objects
     10 => int NUM_ADDRS;
-    20 => int MAX_PARAMETERS;
+    30 => int MAX_PARAMETERS;
 
     OscOut out[NUM_ADDRS];
     OscMsg out_msg[NUM_ADDRS];
