@@ -24,6 +24,8 @@ if( me.args() ) {
         cmd.start( "/changeip, ss" );
         cmd.add( me.arg(0) ).add( me.arg(1) );
         cmd.send();
+    } else if( me.arg(0) == "print" ) {
+        cmd.start( "/print" ).send();
     } else {
         <<< "\n\tSomething went wrong. Please check your arguments and try again." >>>;
     }
