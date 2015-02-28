@@ -21,6 +21,7 @@ public class ChainOut extends Chugen {
             while( in.recv(msg) ){
                 if( msg.address == "/disconnect" || msg.address == "/connect" ) {
                     msg.getString(0) => dest;
+                    out.dest( dest, port );
                     1 => first;
                 }
             }
@@ -30,7 +31,6 @@ public class ChainOut extends Chugen {
     fun void send() {
         while( samp => now ) {
             if( dest != "localhost" && dest != "" ) {
-                out.dest( dest, port );
                 out.start( "/chain, f" );
                 out.add( sig );
                 out.send();
