@@ -4,7 +4,7 @@ public class Rec extends Chugen {
 
     float sig;
 
-    in.port( 57120 );
+    in.port( 67120 );
     in.listenAll();
 
     fun float tick( float in ) {

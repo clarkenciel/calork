@@ -4,28 +4,39 @@ public class Source extends Chugen {
     string names[0];
     string connections[0][0];
     string dest;
-    57120 => int port;
-    57121 => int chainPort;
 
-    float sig[0];
+    67120 => int port;
+    67121 => int chainPort;
+
+    float sig[44100];
+    440 => float f;
     for( int i; i < 44100; i ++ ) {
-        sig << Math.sin( (i/44100.0) * pi );
+        Math.sin( i*2*pi/44100 ) @=> sig[i];
     }
-    int count;
+    float count;
+    int idx;
+
 
     fun float tick( float in ) {
-        count++; count % sig.cap() => count;
+        f +=> count; 
+        while( count >= 44100 ) 44100 -=> count;
+        count $ int => idx;
         out.dest( dest, port );
         out.start( "/sig, f");
-        out.add( sig[count] );
+        out.add( sig[idx] );
         out.send();
-        return sig[count];
+        return sig[idx];
+    }
+
+    fun void freq( float in ) { 
+        in => freq;
     }
 
     fun void addMem( string name, string ip ) {
         // add check to make sure I don't re-add people
         if( !exists( name ) ) {
-            names << name;
+            names.size( names.size() + 1 );
+            name @=> names[ names.cap() -1 ];
             ip @=> members[ name ];
             if( names.cap() == 1 ) {
                 ip => dest;
@@ -66,6 +77,12 @@ public class Source extends Chugen {
                 connections.popBack();
             }
         }
+    }
+
+    fun void tog( string name ) {
+        members[ name ] @=> dest;
+        out.dest( dest, chainPort );
+        out.start( "/tog" ).send();
     }
 
     fun int exists( string name ) {

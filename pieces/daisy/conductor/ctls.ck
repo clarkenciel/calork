@@ -26,6 +26,8 @@ if( me.args() ) {
         cmd.send();
     } else if( me.arg(0) == "print" ) {
         cmd.start( "/print" ).send();
+    } else if( me.arg(0) == "tog" ) {
+        cmd.start( "/tog" ).add( me.arg(1) ).send();
     } else {
         <<< "\n\tSomething went wrong. Please check your arguments and try again." >>>;
     }
