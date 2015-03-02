@@ -1,17 +1,16 @@
 public class Rec extends Chugen {
-    OscIn in;
-    OscMsg msg;
-
     float sig;
-
-    in.port( 57120 );
-    in.listenAll();
 
     fun float tick( float in ) {
         return sig;
     }
 
     fun void listen() {
+        OscIn in;
+        OscMsg msg;
+        in.port( 67120 );
+        in.listenAll();
+
         while( true ) {
             in => now;
             while( in.recv( msg ) ) {
