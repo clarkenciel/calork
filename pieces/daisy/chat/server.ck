@@ -70,7 +70,6 @@ public class ChuckleServer {
             }
         }
     }
-            
 
     // Check if a name has already been added
     fun int nameCheck( string name ) {
@@ -93,6 +92,15 @@ public class ChuckleServer {
                 1 => out;
                 break;
             }
+        }
+        return out;
+    }
+
+    // stickers
+    fun int stickers( string stick ) {
+        string out;
+        if( stick == "finger" ) {
+            "(?_?)+n+" => out;
         }
         return out;
     }

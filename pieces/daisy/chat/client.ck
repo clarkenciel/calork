@@ -60,7 +60,6 @@ public class ChuckleClient {
             k => now;
             while( k.more() ) {
                 k.getchar() => v;
-                //<<< v>>>;
                 if( v >= 97 && v <= 122 )
                     chars[v - 97] +=> txt;
     
@@ -90,10 +89,32 @@ public class ChuckleClient {
             }
         }
     }
+
+    // Command parser
+    fun void cmdParse( string txt ) {
+        ["@", "sticker:"] @=> string commands[];
+        for( int i; i < commands.cap(); i ++ ) {
+            if( txt.find( commands[i] ) {
+                <<< "Command found!",commands[i] >>>; // debug for now
+            }
+        }
+    }
+
+    // see if in array
+    fun void isIn( string val, string a[] ) {
+        int out;
+        for( int i; i < a.cap(); i++ ) {
+            if( a[i] == val ) {
+                1 => out;
+                break;
+            }
+        }
+        return out;
+    }
 }
 
 
-// TEST CODE
+// TEST CODE (Actually this is functional...)
 ChuckleClient c;
 OscOut out;
 out.dest( "localhost", 17000 );
@@ -110,23 +131,4 @@ if( me.args() == 3 ) {
 
 spork ~ c.rcv();
 spork ~ c.snd();
-//spork ~ outLoop();
-//spork ~ inLoop();
 while( ms => now );
-
-fun void outLoop() {
-    while( 500::ms => now ) {
-        out.start("/broadcast").add("hi").send();
-}}
-
-fun void inLoop() {
-    OscIn in;
-    OscMsg m;
-    in.port(17000); in.listenAll();
-    while( in => now ) {
-        while( in.recv(m) ) {
-            <<< m.getString(0) >>>;
-        }
-    }
-}
-            

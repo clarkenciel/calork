@@ -6,14 +6,19 @@ Rec r;
 ChainOut s;
 
 // Sound Chain
-r => BPF b => s => Gain g => dac;
+r => BPF b => s => NRev rev => Gain g => dac;
+s => Delay d => rev;
 
 // control vars
 1.0 => float Q; 440 => float bFreq;
 0.5 => float master;
 int kVal;
 
+s.op(4);
 b.set( bFreq, Q ); g.gain( master );
+rev.mix(0.05);
+d.max(44100::samp);
+d.delay(1::ms);
 
 //----------------SPORKED OFF FUNCS--------------
 spork ~ r.listen();

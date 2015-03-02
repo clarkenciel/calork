@@ -54,12 +54,22 @@ public class Source extends Chugen {
     }
 
     fun void connect( string from, string to ) {
-        members[ from ] @=> dest;
-        out.dest( dest, chainPort );
-        out.start( "/connect, s" );
-        out.add( members[ to ] );
-        out.send();
-        connections << [from, to];
+        int exists;
+        for( int i; i < connections.cap(); i ++ ) {
+            if( connections[i][0] == from && connections[i][1] == to ) {
+                <<< "\n\tConnection from",from,"to",to,"already exists","">>>;
+                1 => exists;
+            }
+        }
+        if( !exists ) {
+            OscOut out;
+            members[ from ] @=> dest;
+            out.dest( dest, chainPort );
+            out.start( "/connect, s" );
+            out.add( members[ to ] );
+            out.send();
+            connections << [from, to];
+        }
     }
     
     fun void disconnect( string name ) {
