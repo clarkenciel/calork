@@ -29,7 +29,7 @@ public class Source extends Chugen {
     }
 
     fun void freq( float in ) { 
-        in => freq;
+        in => f;
     }
 
     fun void addMem( string name, string ip ) {

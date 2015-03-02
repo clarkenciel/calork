@@ -82,7 +82,7 @@ while( true ) {
             }
         }
         if( kVal == 61 || kVal == 43 ) {
-            if( master + 0.05 <= 0.9 ) {
+            if( master + 0.05 <= 1.25 ) {
                 0.05 +=> master;
                 master => g.gain;
                 <<< "Gain:",g.gain(),"">>>;

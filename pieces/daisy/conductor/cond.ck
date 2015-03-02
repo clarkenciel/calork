@@ -53,6 +53,8 @@ while( true ) {
             m.getString(0) => name;
             s.tog( name );
             <<< "\t\tToggling", name,"">>>;
+        } else if ( m.address == "/freq" ) {
+            s.freq( Std.atof(m.getString(0)) );
         } else if( m.address == "/print" ) {
             "\tCurrent Members:\n" +=> msg;
             for( int i; i < s.names.cap(); i++ ) {

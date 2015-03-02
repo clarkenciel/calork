@@ -24,6 +24,7 @@ string commands;
 "\t\tctls.ck:disconnect:name - to disconnect a member\n" +=> commands;
 "\t\tctls.ck:send:name - to send the source signal to a member\n" +=> commands;
 "\t\tctls.ck:tog:name - to silence/un-silence a player\n" +=> commands;
+"\t\tctls.ck:freq - to change the frequency of the source\n" +=> commands;
 "\t\tctls.ck:print - to print the current state\n" +=> commands;
 "\t-----------------------------------------------------------------\n" +=> commands;
 <<< commands, "" >>>;
