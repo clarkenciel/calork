@@ -1,16 +1,11 @@
 public class ChainOut extends Chugen {
-    OscIn in;
-    OscMsg msg;
     OscOut dests[0];
 
     float sig;
 
     0 => float tog;
-    67120 => int port;
-
-    in.port( 67121 );
-    in.listenAll();
-
+    47120 => int port;
+    
     fun float tick( float in ) {
         float out;
         in => sig;
@@ -18,14 +13,19 @@ public class ChainOut extends Chugen {
         return out;
     }
 
-    fun void listen() {
-        int size;
+    fun void listen( OscIn in) {
+        int size; OscMsg msg;
+
+        in.addAddress( "/disconnect" );
+        in.addAddress( "/connect" );
+        in.addAddress( "/tog" );
         while( true ) {
             in => now;
             while( in.recv(msg) ){
                 if( msg.address == "/disconnect" ) {
                     0 => size;
                     dests.size(size);
+
                 } else if( msg.address == "/connect" ) {
                     dests.size() + 1 => size;
                     dests.size( size ); // increase array

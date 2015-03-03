@@ -1,9 +1,13 @@
 // non-conductor "part"
 // Author: Danny Clarke
 
-KBHit k;
+KBHit k; Hid kH; HidMsg kM;
+kH.openKeyboard(0);
 Rec r;
 ChainOut s;
+OscIn in; OscMsg m;
+in.port(47120);
+//in.listenAll();
 
 // Sound Chain
 r => BPF b => s => NRev rev => Gain g => dac;
@@ -12,7 +16,6 @@ s => Delay d => rev;
 // control vars
 1.0 => float Q; 440 => float bFreq;
 0.5 => float master;
-int kVal;
 
 s.op(4);
 b.set( bFreq, Q ); g.gain( master );
@@ -21,9 +24,11 @@ d.max(44100::samp);
 d.delay(1::ms);
 
 //----------------SPORKED OFF FUNCS--------------
+spork ~ s.listen(in);
 spork ~ r.listen();
-spork ~ s.listen();
 spork ~ s.send();
+//spork ~ hidListen( kH, kM );
+spork ~ kbhitListen();
 
 //------------------WELCOME MESSAGE---------------
 string welcome;
@@ -37,73 +42,157 @@ string welcome;
 "-------------------------------------------------------------"+=> welcome;
 <<< welcome,"" >>>;
 
-//-------------KEYBOARD COMMANDS LISTENER---------
-while( true ) {
-    k => now;
-    while( k.more() ) {
-        k.getchar() => kVal;
-        if( kVal == 32 ) {
-            <<< "\n\nBPF Q:", b.Q(), "BPF Freq", b.freq(),"Gain:",g.gain(), "\n\n","" >>>;
-        }
-        if( kVal == 72 ) {
-            if( Q + 1 < 200.0 ) {
-                1 +=> Q;
-                Q => b.Q;
-                <<< "Q:", b.Q(),"">>>;
-            } else {
-                <<< "Maximum Allowed reached:","">>>;
-            }
-        }
-        if( kVal == 80 ) {
-            if( Q - 1 > 1.0 ) {
-                1 -=> Q;
-                Q => b.Q;
-                <<< "Q:", b.Q(),"">>>;
-            } else {
-                <<< "Minimum Allowed reached:","">>>;
-            }
-        }
-        if( kVal == 77 ) {
-            if( bFreq + 10 < 15000 ) {
-                10 +=> bFreq;
-                bFreq => b.freq;
-                <<< "BPF Freq:", b.freq(),"" >>>;
-            } else {
-                <<< "Maximum Allowed reached:","">>>;
-            }
-        }
-        if( kVal == 75 ) {
-            if( bFreq - 10.0 > 100 ) {
-                10 -=> bFreq;
-                bFreq => b.freq;
-                <<< "BPF Freq:", b.freq(),"" >>>;
-            } else {
-                <<< "Minimum Allowed reached:","">>>;
-            }
-        }
-        if( kVal == 61 || kVal == 43 ) {
-            if( master + 0.05 <= 1.25 ) {
-                0.05 +=> master;
-                master => g.gain;
-                <<< "Gain:",g.gain(),"">>>;
-            } else {
-                <<< "Maximum Allowed reached:","">>>;
-            }
+while( ms => now );
 
-        }
-        if( kVal == 45 || kVal == 95 ) {
-            if( master - 0.05 >= 0.01 ) {
-                0.05 -=> master;
-                master => g.gain;
-                <<< "Gain:",g.gain(),"">>>;
-            } else {
-                <<< "Minimum Allowed reached:","">>>;
+//-------------KEYBOARD COMMANDS LISTENER---------
+fun void hidListen( Hid kH, HidMsg k) {
+    int kVal; int shift; int once;
+    while( true ) {
+        kH => now;
+        while( kH.recv(k) ) {
+            k.which => kVal;
+            //<<< kVal >>>;
+            if( kVal == 229 && shift > 0 ) {
+                0 => shift;
+            } else if( kVal == 229 && shift == 0 ) {
+                1 => shift;
+            }
+            if( kVal == 44 ) {
+                <<< "\n\nBPF Q:", b.Q(), "BPF Freq", b.freq(),"Gain:",g.gain(), "\n\n","" >>>;
+            }
+            if( kVal == 82 ) {
+                if( Q + 1 < 200.0 ) {
+                    1 +=> Q;
+                    Q => b.Q;
+                    <<< "Q:", b.Q(),"">>>;
+                } else {
+                    <<< "Maximum Allowed reached:","">>>;
+                }
+            }
+            if( kVal == 81 ) {
+                if( Q - 1 > 1.0 ) {
+                    1 -=> Q;
+                    Q => b.Q;
+                    <<< "Q:", b.Q(),"">>>;
+                } else {
+                    <<< "Minimum Allowed reached:","">>>;
+                }
+            }
+            if( kVal == 79 ) {
+                if( bFreq + 10 < 15000 ) {
+                    10 +=> bFreq;
+                    bFreq => b.freq;
+                    <<< "BPF Freq:", b.freq(),"" >>>;
+                } else {
+                    <<< "Maximum Allowed reached:","">>>;
+                }
+            }
+            if( kVal == 80) {
+                if( bFreq - 10.0 > 100 ) {
+                    10 -=> bFreq;
+                    bFreq => b.freq;
+                    <<< "BPF Freq:", b.freq(),"" >>>;
+                } else {
+                    <<< "Minimum Allowed reached:","">>>;
+                }
+            }
+            if( kVal + shift == 47 || kVal + shift == 46 ) {
+                if( master + 0.05 <= 1.25 ) {
+                    0.05 +=> master;
+                    master => g.gain;
+                    <<< "Gain:",g.gain(),"">>>;
+                } else {
+                    <<< "Maximum Allowed reached:","">>>;
+                }
+                
+            }
+            if( kVal + shift == 45 || kVal + shift == 45 ) {
+                if( master - 0.05 >= 0.01 ) {
+                    0.05 -=> master;
+                    master => g.gain;
+                    <<< "Gain:",g.gain(),"">>>;
+                } else {
+                    <<< "Minimum Allowed reached:","">>>;
+                }
+            }
+            if( kVal == 40 ) {
+                <<< "\n\n","">>>;
+                <<< "\n\tBPF Q:", b.Q(), "BPF Freq", b.freq(),"Gain:",g.gain(), "\n\n","" >>>;
+                <<< welcome,"" >>>;
             }
         }
-        if( kVal == 13 ) {
-            <<< "\n\n","">>>;
-            <<< "\n\tBPF Q:", b.Q(), "BPF Freq", b.freq(),"Gain:",g.gain(), "\n\n","" >>>;
-            <<< welcome,"" >>>;
+    }
+}
+
+fun void kbhitListen() {
+    int kVal;
+    while( true ) {
+        k => now;
+        while( k.more() ) {
+            k.getchar() => kVal;
+            if( kVal == 32 ) {
+                <<< "\n\nBPF Q:", b.Q(), "BPF Freq", b.freq(),"Gain:",g.gain(), "\n\n","" >>>;
+            }
+            if( kVal == 72 ) {
+                if( Q + 1 < 200.0 ) {
+                    1 +=> Q;
+                    Q => b.Q;
+                    <<< "Q:", b.Q(),"">>>;
+                } else {
+                    <<< "Maximum Allowed reached:","">>>;
+                }
+            }
+            if( kVal == 80 ) {
+                if( Q - 1 > 1.0 ) {
+                    1 -=> Q;
+                    Q => b.Q;
+                    <<< "Q:", b.Q(),"">>>;
+                } else {
+                    <<< "Minimum Allowed reached:","">>>;
+                }
+            }
+            if( kVal == 77 ) {
+                if( bFreq + 10 < 15000 ) {
+                    10 +=> bFreq;
+                    bFreq => b.freq;
+                    <<< "BPF Freq:", b.freq(),"" >>>;
+                } else {
+                    <<< "Maximum Allowed reached:","">>>;
+                }
+            }
+            if( kVal == 75 ) {
+                if( bFreq - 10.0 > 100 ) {
+                    10 -=> bFreq;
+                    bFreq => b.freq;
+                    <<< "BPF Freq:", b.freq(),"" >>>;
+                } else {
+                    <<< "Minimum Allowed reached:","">>>;
+                }
+            }
+            if( kVal == 61 || kVal == 43 ) {
+                if( master + 0.05 <= 1.25 ) {
+                    0.05 +=> master;
+                    master => g.gain;
+                    <<< "Gain:",g.gain(),"">>>;
+                } else {
+                    <<< "Maximum Allowed reached:","">>>;
+                }
+                
+            }
+            if( kVal == 45 || kVal == 95 ) {
+                if( master - 0.05 >= 0.01 ) {
+                    0.05 -=> master;
+                    master => g.gain;
+                    <<< "Gain:",g.gain(),"">>>;
+                } else {
+                    <<< "Minimum Allowed reached:","">>>;
+                }
+            }
+            if( kVal == 13 ) {
+                <<< "\n\n","">>>;
+                <<< "\n\tBPF Q:", b.Q(), "BPF Freq", b.freq(),"Gain:",g.gain(), "\n\n","" >>>;
+                <<< welcome,"" >>>;
+            }
         }
     }
 }

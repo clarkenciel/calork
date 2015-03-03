@@ -9,7 +9,7 @@ KBHit k;
 string msg, kmsg, name, ip, to, from;
 int kVal;
 
-cmd.port( 57120 );
+cmd.port( 37120 );
 cmd.listenAll();
 print.dest( "localhost", 12000 );
 

@@ -19,7 +19,7 @@ public class ChuckleClient {
         while( true ) {
             in => now;
             while( in.recv(m) ) {
-                if( m.address == "/broadcast" ) {
+                if( m.address == "/all" || m.address == "/"+name ) {
                     <<< m.getString(0), "" >>>;
                 }
             }
@@ -42,6 +42,20 @@ public class ChuckleClient {
         <<< "\n\n\tLogging in as:",name,"@",meIp,"sending to:",sIp,"">>>;
         out.dest( sIp, sPort );
         out.start("/login").add(name).add(meIp).send();
+    }
+    
+    // parse string for Loop: commands
+    fun string loopParse( string s ) {
+        "Loop:" => string starter;
+        "n:" => string number;
+    
+        // find the index of the start of the command
+    
+        // find the index of the end of the command
+    
+        // find the number of repetitions, if any
+    
+    
     }
 
     // send a message (down here because it's long
@@ -90,18 +104,8 @@ public class ChuckleClient {
         }
     }
 
-    // Command parser
-    fun void cmdParse( string txt ) {
-        ["@", "sticker:"] @=> string commands[];
-        for( int i; i < commands.cap(); i ++ ) {
-            if( txt.find( commands[i] ) {
-                <<< "Command found!",commands[i] >>>; // debug for now
-            }
-        }
-    }
-
     // see if in array
-    fun void isIn( string val, string a[] ) {
+    fun int isIn( string val, string a[] ) {
         int out;
         for( int i; i < a.cap(); i++ ) {
             if( a[i] == val ) {

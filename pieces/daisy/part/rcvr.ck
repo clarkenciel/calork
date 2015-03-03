@@ -8,8 +8,9 @@ public class Rec extends Chugen {
     fun void listen() {
         OscIn in;
         OscMsg msg;
-        in.port( 67120 );
-        in.listenAll();
+        in.port( 47120 );
+        in.addAddress( "/sig, f" );
+        in.addAddress( "/chain, f" );
 
         while( true ) {
             in => now;

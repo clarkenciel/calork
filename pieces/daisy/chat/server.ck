@@ -13,8 +13,9 @@ public class ChuckleServer {
 
     // add a new members
     fun void add( string name, string ip ) {
-        //<<< "checking",name,"@", ip,"" >>>;
-        if( !nameCheck( name ) ) { // if the name is new go ahead and add new name
+        string lmsg;
+        
+        if( nameCheck( name ) < 1) { // if the name is new go ahead and add new name
             names.size( names.size() + 1 ); // expand list of names
             name @=> names[ names.cap() - 1];
 
@@ -23,8 +24,10 @@ public class ChuckleServer {
             out.size( out.size() + 1 );
             new OscOut @=> out[ out.size() -1 ];
             out[ out.size() -1 ].dest( ips[ names[names.size()-1] ], cliPort );
-
-        } else if( !ipCheck(ip) ) { // if we've seen the name, but not the ip
+            
+            "\n\t"+names[names.cap()-1]+" has entered" => lmsg;
+            snd( "all", lmsg );
+        } else if( ipCheck(ip) < 1 ) { // if we've seen the name, but not the ip
             ip @=> ips[ name ];
             <<< name, "already stored, changing ip to:",ips[name],"">>>;
         } // do nothing otherwise
@@ -34,21 +37,36 @@ public class ChuckleServer {
     fun void rec() {
         OscIn in;
         OscMsg m;
-        in.port(mePort); in.listenAll();
+        in.port(mePort); in.addAddress("/msg");
+        string msg[0];
+        string out[0];
+        string leader;
 
         while( in => now ) {
             while( in.recv(m) ) {
-                if( m.address == "/msg" ) {
-                    snd( m.getString(0) );
+                atParse( m.getString(0) ) @=> msg; // parse message for @ commands
+                getLeader( msg[0] ) => leader;
+                for( int i; i < msg.cap(); i++ ) {
+                    getDest( msg[i] ) @=> out; // parse for addresses and messages
+                    <<< out[0], out[1],"">>>;
+                    if( out[1].length() > 0 )
+                        snd( out[0], leader + out[1] ); // send messages
                 }
             }
         }
     }
 
     // pass a message out to the clients
-    fun void snd( string mout ) {
-        for( int i; i < out.cap(); i ++ ) {
-            out[i].start("/broadcast").add(mout).send();
+    fun void snd( string dest, string mout ) {
+        getInd( dest, names ) => int idx;
+        if( dest == "all" ) {
+            for( int i; i < out.cap(); i ++ ) {
+                if( idx != i )
+                    out[i].start("/"+dest).add(mout).send();
+            }
+        } else {
+            if( idx >= 0 )
+                out[ idx ].start( "/"+dest ).add(mout).send();
         }
     }
 
@@ -63,9 +81,7 @@ public class ChuckleServer {
         while( in => now ) {
             while( in.recv(m) ) {
                 if( m.address == "/login" ) {
-                    add( m.getString(0), m.getString(1) );  
-                    "\n\t"+names[names.cap()-1]+" has entered" => lmsg;
-                    snd( lmsg );
+                    add( m.getString(0), m.getString(1) );
                 }
             }
         }
@@ -75,10 +91,8 @@ public class ChuckleServer {
     fun int nameCheck( string name ) {
         int out;
         for( int i; i < names.cap(); i++ ) {
-            if( names[i] == name ) {
-                1 => out;
-                break;
-            }
+            if( names[i] == name )
+                1 => out; break;
         }
         return out;
     
@@ -88,19 +102,81 @@ public class ChuckleServer {
     fun int ipCheck( string ip ) {
         int out;
         for( int i; i < names.cap(); i ++ ) {
-            if( ips[ names[i] ] == ip ) {
-                1 => out;
-                break;
-            }
+            if( ips[ names[i] ] == ip )
+                1 => out; break;
         }
         return out;
     }
+    
+    // Get index of item in array
+    fun int getInd( string s, string a[] ) {
+        -1 => int ind;
+        for( int i; i < a.cap(); i ++ ) {
+            if( a[i] == s )
+                i => ind; break;
+        }
+        return ind;
+    }
+    // get message leader
+    fun string getLeader( string s ) {
+        s.find( ":" ) => int cInd;
+        return s.substring(0, cInd+1);
+    }
+    
+    // get destination of an @-parsed message
+    fun string[] getDest( string s ) { 
+        s => string t;
+        string out[2];
+        t.find("@") => int atInd;
+        t.find(":") => int colonInd;
+        if( colonInd - atInd > 0 ) {
+            t.substring(atInd + 1, colonInd - atInd - 1) @=> out[0]; // the address
+            t.substring( colonInd+1 ) @=> out[1]; // the message
+        }       
+        
+        if( out[0] != "" ) return out;
+        else {
+            "all" @=> out[0];
+            s @=> out[1];
+            return out;
+        }
+    }
 
-    // stickers
-    fun int stickers( string stick ) {
-        string out;
-        if( stick == "finger" ) {
-            "(?_?)+n+" => out;
+    // parse string for @-addresses (to be used after cmdParse)
+    //  NB: first index == message pre-first-@ 
+    fun string[] atParse( string s ) {
+        string out[0]; "@" => string at;
+        int atIdx[0]; int idx;
+        
+        // get indexes of @ symbols
+        while( s.find(at, idx) >= 0 ) {
+            atIdx.size( atIdx.size()+1 );
+            s.find(at, idx) @=> atIdx[ atIdx.size()-1 ];
+            atIdx[ atIdx.size()-1 ] + 1 @=> idx;
+        }
+        
+        // add pre-first-@ part of message
+        if( atIdx.cap() > 0 && s.substring( 0, atIdx[0] ).length() > 0 ) {
+            out.size( out.size()+1 );
+            s.substring( 0, atIdx[0] ) @=> out[ out.size()-1 ];
+        }
+        
+        // get rest of post-@ strings
+        for( int i; i < atIdx.cap(); i ++ ) {
+            atIdx[i] @=> idx;
+            if( i >= atIdx.cap()-1 ) {
+                out.size( out.size()+1 );
+                s.substring( atIdx[i] ) @=> out[ out.size()-1 ];
+            } else {
+                atIdx[ i+1 ] @=> idx;
+                out.size( out.size()+1 );
+                s.substring( atIdx[i], idx - atIdx[i] ) @=> out[ out.size()-1 ];
+            }
+        }
+        
+        if( out.cap() < 1 ) {
+            out.size( out.size()+1 );
+            s @=> out[0];
         }
         return out;
     }

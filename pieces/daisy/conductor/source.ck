@@ -3,10 +3,9 @@ public class Source extends Chugen {
     string members[0];
     string names[0];
     string connections[0][0];
-    string dest;
+    "localhost" => string dest;
 
-    67120 => int port;
-    67121 => int chainPort;
+    47120 => int port;
 
     float sig[44100];
     440 => float f;
@@ -40,12 +39,22 @@ public class Source extends Chugen {
             ip @=> members[ name ];
             if( names.cap() == 1 ) {
                 ip => dest;
+                out.dest( dest, port );
             }
+        } else if( exists(name) ) {
+            ip @=> members[ name ];
+        }
+    }
+
+    fun void addMult( string _names[], string _ips[] ) {
+        for( int i; i < _names.cap(); i ++ ) {
+            addMem( _names[i], _ips[i] );
         }
     }
 
     fun void setDest( string name ) {
         members[ name ] @=> dest;
+        out.dest( dest, port );
         <<< "sending to",name,"" >>>;
     }
 
@@ -55,6 +64,8 @@ public class Source extends Chugen {
 
     fun void connect( string from, string to ) {
         int exists;
+        string tDest;
+
         for( int i; i < connections.cap(); i ++ ) {
             if( connections[i][0] == from && connections[i][1] == to ) {
                 <<< "\n\tConnection from",from,"to",to,"already exists","">>>;
@@ -62,19 +73,21 @@ public class Source extends Chugen {
             }
         }
         if( !exists ) {
-            OscOut out;
+            dest => string tDest;
             members[ from ] @=> dest;
-            out.dest( dest, chainPort );
+            out.dest( dest, port );
             out.start( "/connect, s" );
             out.add( members[ to ] );
             out.send();
             connections << [from, to];
+            out.dest( tDest, port );
         }
     }
     
     fun void disconnect( string name ) {
+        dest => string tDest;
         members[ name ] @=> dest;
-        out.dest( dest, chainPort );
+        out.dest( dest, port );
         out.start( "/disconnect, s" );
         out.add( "localhost" );
         out.send();
@@ -87,12 +100,15 @@ public class Source extends Chugen {
                 connections.popBack();
             }
         }
+        out.dest( tDest, port );
     }
 
     fun void tog( string name ) {
+        dest => string tDest;
         members[ name ] @=> dest;
-        out.dest( dest, chainPort );
+        out.dest( dest, port );
         out.start( "/tog" ).send();
+        out.dest( tDest, port );
     }
 
     fun int exists( string name ) {
