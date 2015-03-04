@@ -5,13 +5,9 @@ cmd.dest( "localhost", 37120 );
 
 if( me.args() ) {
     if( me.arg(0) == "addMem" ) {
-        <<< "starting","">>>;
         cmd.start( "/addMem" ); 
-        <<< "adding","">>>;
         cmd.add( me.arg(1) ).add( me.arg(2) );
-        <<< "sending","" >>>;
         cmd.send();
-        <<< "sent","">>>;
     } else if( me.arg(0) == "connect" ) {
         cmd.start( "/connect" );
         cmd.add( me.arg(1) ).add( me.arg(2) );

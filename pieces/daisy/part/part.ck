@@ -1,13 +1,15 @@
 // non-conductor "part"
 // Author: Danny Clarke
 
+me.arg(0) => string name;
+
 KBHit k; Hid kH; HidMsg kM;
 kH.openKeyboard(0);
 Rec r;
 ChainOut s;
 OscIn in; OscMsg m;
 in.port(47120);
-//in.listenAll();
+in.listenAll();
 
 // Sound Chain
 r => BPF b => s => NRev rev => Gain g => dac;
@@ -17,7 +19,6 @@ s => Delay d => rev;
 1.0 => float Q; 440 => float bFreq;
 0.5 => float master;
 
-s.op(4);
 b.set( bFreq, Q ); g.gain( master );
 rev.mix(0.05);
 d.max(44100::samp);
@@ -25,8 +26,8 @@ d.delay(1::ms);
 
 //----------------SPORKED OFF FUNCS--------------
 spork ~ s.listen(in);
-spork ~ r.listen();
-spork ~ s.send();
+spork ~ r.listen( name );
+spork ~ s.send( name );
 //spork ~ hidListen( kH, kM );
 spork ~ kbhitListen();
 

@@ -1,5 +1,6 @@
 public class ChainOut extends Chugen {
-    OscOut dests[0];
+    OscOut oOut;
+    string dest;
 
     float sig;
 
@@ -16,23 +17,13 @@ public class ChainOut extends Chugen {
     fun void listen( OscIn in) {
         int size; OscMsg msg;
 
-        in.addAddress( "/disconnect" );
-        in.addAddress( "/connect" );
-        in.addAddress( "/tog" );
         while( true ) {
             in => now;
             while( in.recv(msg) ){
                 if( msg.address == "/disconnect" ) {
-                    0 => size;
-                    dests.size(size);
-
+                    "" => dest;      
                 } else if( msg.address == "/connect" ) {
-                    dests.size() + 1 => size;
-                    dests.size( size ); // increase array
-
-                    new OscOut @=> dests[ size - 1 ]; // add new destination
-                    dests[ size - 1].dest( msg.getString(0), port );
-
+                    msg.getString(0) => dest;
                 } else if( msg.address == "/tog" ) {
                     if( tog > 0 ) {
                         0 => tog;
@@ -46,14 +37,14 @@ public class ChainOut extends Chugen {
         }
     }
 
-    fun void send() {
+    fun void send( string name ) {
         while( samp => now ) {
-            if( dests.size() > 0 ) {
-                for( int i; i < dests.size(); i ++ ) {
-                    dests[i].start( "/chain, f" );
-                    dests[i].add( sig );
-                    dests[i].send();
-                }
+            if( dest != "" ) {
+                oOut.dest( dest, 47120 ); 
+                oOut.start( "/sig" );
+                oOut.add( name );
+                oOut.add( sig );
+                oOut.send();
             }
         }
     }

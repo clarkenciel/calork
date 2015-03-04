@@ -72,15 +72,18 @@ public class Source extends Chugen {
                 1 => exists;
             }
         }
-        if( !exists ) {
-            dest => string tDest;
-            members[ from ] @=> dest;
+        if( exists == 0 ) {
+            dest => tDest;
+            members[ from ] => dest;
             out.dest( dest, port );
             out.start( "/connect, s" );
             out.add( members[ to ] );
             out.send();
-            connections << [from, to];
             out.dest( tDest, port );
+
+            connections.size( connections.size() + 1 );
+            from @=> connections[ connections.size()-1 ][0];
+            to @=> connections[ connections.size()-1 ][1];
         }
     }
     
@@ -89,7 +92,6 @@ public class Source extends Chugen {
         members[ name ] @=> dest;
         out.dest( dest, port );
         out.start( "/disconnect, s" );
-        out.add( "localhost" );
         out.send();
         for( int i; i < connections.cap(); i++ ) {
             if( connections[i][0] == name ) {
