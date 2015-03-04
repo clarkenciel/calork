@@ -3,7 +3,7 @@ public class Source extends Chugen {
     string members[0];
     string names[0];
     string connections[0][0];
-    "junk" => string dest;
+    "" => string dest;
 
     47120 => int port;
 
@@ -20,11 +20,13 @@ public class Source extends Chugen {
         f +=> count; 
         while( count >= 44100 ) 44100 -=> count;
         count $ int => idx;
-        out.dest( dest, port );
-        out.start( "/sig" );
-        out.add( "source" );
-        out.add( sig[idx] );
-        out.send();
+        if( dest != "" ) {
+            out.dest( dest, port );
+            out.start( "/sig" );
+            out.add( "source" );
+            out.add( sig[idx] );
+            out.send();
+        }
         return sig[idx];
     }
 
@@ -81,6 +83,7 @@ public class Source extends Chugen {
             out.start( "/connect, s" );
             out.add( members[ to ] );
             out.send();
+            tDest => dest;
             out.dest( tDest, port );
 
             connections.size( connections.size() + 1 );
@@ -105,6 +108,7 @@ public class Source extends Chugen {
                 connections.popBack();
             }
         }
+        tDest => dest;
         out.dest( tDest, port );
     }
 
@@ -113,11 +117,13 @@ public class Source extends Chugen {
         members[ name ] @=> dest;
         out.dest( dest, port );
         out.start( "/tog" ).send();
+        tDest => dest;
         out.dest( tDest, port );
     }
 
     fun void stopSend() {
-        "junk" => dest;
+        "" => dest;
+        out.dest( tDest, port );
     }
 
     fun int exists( string name ) {

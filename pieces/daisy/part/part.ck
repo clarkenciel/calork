@@ -13,7 +13,7 @@ in.listenAll();
 
 // Sound Chain
 r => BPF b => s => NRev rev => Gain g => dac;
-s => Delay d => rev;
+//s => Delay d => rev;
 
 // control vars
 1.0 => float Q; 440 => float bFreq;
@@ -21,8 +21,8 @@ s => Delay d => rev;
 
 b.set( bFreq, Q ); g.gain( master );
 rev.mix(0.05);
-d.max(44100::samp);
-d.delay(1::ms);
+//d.max(44100::samp);
+//d.delay(1::ms);
 
 //----------------SPORKED OFF FUNCS--------------
 spork ~ s.listen(in);
