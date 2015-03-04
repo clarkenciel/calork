@@ -9,7 +9,7 @@ CalorkOsc c;
 
 c.myAddr("/eric");
 
-// c.addIp("ip", "/name");
+c.addIp("localhost", "/test");
 // c.addIp("ip", "/name");
 // c.addIp("ip", "/name");
 // c.addIp("ip", "/name");
@@ -69,7 +69,6 @@ Hid keyboard[5];
 int whichKeyboard;
 
 for (int i; i < keyboard.size(); i++) {
-    HidMsg msg;
     if(keyboard[i].openKeyboard(i)) {
         if (keyboard[i].name() == keyboardName) {
             <<< keyboard[i].name() + " ready!", "" >>>;
