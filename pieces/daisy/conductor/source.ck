@@ -58,7 +58,6 @@ public class Source extends Chugen {
     fun void setDest( string name ) {
         members[ name ] @=> dest;
         out.dest( dest, port );
-        <<< "sending to",name,"" >>>;
     }
 
     fun void changeIp ( string name, string nuIP ) {
@@ -66,25 +65,35 @@ public class Source extends Chugen {
     }
 
     fun void connect( string from, string to ) {
-        int exists;
+        int conExists; // assume no connection
+        1 => int nameExists; // assume name exists
         string tDest;
 
+        // validate names
+        if( !exists( from ) || !exists( to ) ) {
+            <<< "\tEither",from,"or",to,"does not exist.\n","">>>;
+            0 => nameExists; // name does not exist
+        }
+
+        // validate connection redundancy
         for( int i; i < connections.cap(); i ++ ) {
             if( connections[i][0] == from && connections[i][1] == to ) {
                 <<< "\n\tConnection from",from,"to",to,"already exists","">>>;
-                1 => exists;
+                1 => conExists; // connection already exists
+                break;
             }
         }
-
-        if( exists == 0 ) {
+        
+        // if the connection wouldn't be redundant and the names are valid 
+        if( !conExists && nameExists ) { 
             dest => tDest;
             members[ from ] => dest;
             out.dest( dest, port );
             out.start( "/connect, s" );
             out.add( members[ to ] );
             out.send();
-            tDest => dest;
-            out.dest( tDest, port );
+            tDest => dest; // reset out
+            out.dest( dest, port );
 
             connections.size( connections.size() + 1 );
             new string[2] @=> connections[connections.size()-1];
@@ -123,7 +132,7 @@ public class Source extends Chugen {
 
     fun void stopSend() {
         "" => dest;
-        out.dest( tDest, port );
+        out.dest( dest, port );
     }
 
     fun int exists( string name ) {

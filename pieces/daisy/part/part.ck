@@ -13,16 +13,16 @@ in.listenAll();
 
 // Sound Chain
 r => BPF b => s => NRev rev => Gain g => dac;
-//s => Delay d => rev;
+s => Delay d => rev;
 
 // control vars
 1.0 => float Q; 440 => float bFreq;
 0.5 => float master;
 
 b.set( bFreq, Q ); g.gain( master );
-rev.mix(0.05);
-//d.max(44100::samp);
-//d.delay(1::ms);
+rev.mix(0.01);
+d.max(44100::samp);
+d.delay(1::ms);
 
 //----------------SPORKED OFF FUNCS--------------
 spork ~ s.listen(in);
@@ -33,7 +33,7 @@ spork ~ kbhitListen();
 
 //------------------WELCOME MESSAGE---------------
 string welcome;
-<<<"\n\n\t\tWelcome to Daisy!\n\n","">>>;
+<<<"\n\n\t\tWelcome to Daisy",name,"!\n\n","">>>;
 <<<"\tYou are a non-conductor.\n\tHere are your controls:\n\n","">>>;
 "\tUp/Down Arrows: Increase/Decrease BPF Q\n" +=> welcome;
 "\tRight/Left Arrows: Increase/Decrease BPF Frequency\n" +=> welcome;
