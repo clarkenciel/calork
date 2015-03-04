@@ -1,5 +1,5 @@
 public class Rec extends Chugen {
-    float sig;
+    1 => float sig;
 
     fun float tick( float in ) {
         return sig;
