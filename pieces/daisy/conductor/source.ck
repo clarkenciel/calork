@@ -40,10 +40,12 @@ public class Source extends Chugen {
             names.size( names.size() + 1 );
             name @=> names[ names.cap() -1 ];
             ip @=> members[ name ];
+            /*
             if( names.cap() == 1 ) {
                 ip => dest;
                 out.dest( dest, port );
             }
+            */
         } else if( exists(name) ) {
             ip @=> members[ name ];
         }
@@ -65,9 +67,10 @@ public class Source extends Chugen {
     }
 
     fun void connect( string from, string to ) {
+        OscOut tout;
         int conExists; // assume no connection
         1 => int nameExists; // assume name exists
-        string tDest;
+        string tdest;
 
         // validate names
         if( !exists( from ) || !exists( to ) ) {
@@ -86,14 +89,11 @@ public class Source extends Chugen {
         
         // if the connection wouldn't be redundant and the names are valid 
         if( !conExists && nameExists ) { 
-            dest => tDest;
-            members[ from ] => dest;
-            out.dest( dest, port );
-            out.start( "/connect, s" );
-            out.add( members[ to ] );
-            out.send();
-            tDest => dest; // reset out
-            out.dest( dest, port );
+            members[ from ] => tdest;
+            tout.dest( tdest, port );
+            tout.start( "/connect" );
+            tout.add( members[ to ] );
+            tout.send();
 
             connections.size( connections.size() + 1 );
             new string[2] @=> connections[connections.size()-1];
@@ -103,11 +103,12 @@ public class Source extends Chugen {
     }
     
     fun void disconnect( string name ) {
-        dest => string tDest;
-        members[ name ] @=> dest;
-        out.dest( dest, port );
-        out.start( "/disconnect, s" );
-        out.send();
+        OscOut tout;
+        members[ name ] @=> string tdest;
+        tout.dest( tdest, port );
+        tout.start( "/disconnect" );
+        tout.send();
+
         for( int i; i < connections.cap(); i++ ) {
             if( connections[i][0] == name ) {
                 NULL @=> connections[i];
@@ -117,17 +118,12 @@ public class Source extends Chugen {
                 connections.popBack();
             }
         }
-        tDest => dest;
-        out.dest( tDest, port );
     }
 
     fun void tog( string name ) {
-        dest => string tDest;
-        members[ name ] @=> dest;
-        out.dest( dest, port );
-        out.start( "/tog" ).send();
-        tDest => dest;
-        out.dest( tDest, port );
+        OscOut tout;
+        tout.dest( members[ name ], port );
+        tout.start( "/tog" ).send();
     }
 
     fun void stopSend() {
@@ -136,13 +132,13 @@ public class Source extends Chugen {
     }
 
     fun int exists( string name ) {
-        int out;
+        int tout;
         for( int i; i < names.cap(); i++ ) {
             if( names[i] == name ) {
-                1 => out;
+                1 => tout;
                 break;
             }
         }
-        return out;
+        return tout;
     }
 }
