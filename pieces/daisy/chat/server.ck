@@ -40,26 +40,40 @@ public class ChuckleServer {
         in.port(mePort); in.addAddress("/msg");
         string msg[0];
         string out[0];
-        string leader;
+        string notAt[0];
 
         while( in => now ) {
             while( in.recv(m) ) {
                 atParse( m.getString(0) ) @=> msg; // parse message for @ commands
-                getLeader( msg[0] ) => leader;
+                getLeader( msg[0] ) @=> notAt; // parse for any messages after the leader
+                notAt[1] @=> msg[0];
                 for( int i; i < msg.cap(); i++ ) {
                     getDest( msg[i] ) @=> out; // parse for addresses and messages
-                    <<< out[0], out[1],"">>>;
+                    <<< "From",notAt[0]," ",out[1],"=>",out[0],"">>>;
                     if( out[1].length() > 0 )
-                        snd( out[0], leader + out[1] ); // send messages
+                        snd( out[0], notAt[0], out[1] ); // send messages
                 }
             }
         }
     }
 
     // pass a message out to the clients
+    fun void snd( string dest, string leader, string mout ) {
+        getInd( dest, names ) => int idx;
+        if( dest == "all" && mout != " " ) {
+            for( int i; i < out.cap(); i ++ ) {
+                if( idx != i )
+                    out[i].start("/"+dest).add(leader+" "+mout).send();
+            }
+        } else {
+            if( idx >= 0 )
+                out[ idx ].start( "/"+dest ).add(mout).send();
+        }
+    }
+    
     fun void snd( string dest, string mout ) {
         getInd( dest, names ) => int idx;
-        if( dest == "all" ) {
+        if( dest == "all") {
             for( int i; i < out.cap(); i ++ ) {
                 if( idx != i )
                     out[i].start("/"+dest).add(mout).send();
@@ -118,9 +132,12 @@ public class ChuckleServer {
         return ind;
     }
     // get message leader
-    fun string getLeader( string s ) {
+    fun string[] getLeader( string s ) {
+        string out[2];
         s.find( ":" ) => int cInd;
-        return s.substring(0, cInd+1);
+        s.substring(0, cInd+1) @=> out[0];
+        s.substring(cInd+1) @=> out[1];
+        return out;
     }
     
     // get destination of an @-parsed message
