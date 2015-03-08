@@ -3,7 +3,7 @@ public class Source extends Chugen {
     string members[0];
     string names[0];
     string connections[0][0];
-    "" => string dest;
+    "junk" => string dest;
 
     47120 => int port;
 
@@ -15,13 +15,13 @@ public class Source extends Chugen {
     float count;
     int idx;
 
+    out.dest( dest, port );
 
     fun float tick( float in ) {
         f +=> count; 
         while( count >= 44100 ) 44100 -=> count;
         count $ int => idx;
-        if( dest != "" ) {
-            out.dest( dest, port );
+        if( dest != "junk" ) {
             out.start( "/sig" );
             out.add( "source" );
             out.add( sig[idx] );
@@ -127,7 +127,7 @@ public class Source extends Chugen {
     }
 
     fun void stopSend() {
-        "" => dest;
+        "junk" => dest;
         out.dest( dest, port );
     }
 

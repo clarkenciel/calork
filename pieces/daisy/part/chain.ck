@@ -21,16 +21,18 @@ public class ChainOut extends Chugen {
             in => now;
             while( in.recv(msg) ){
                 if( msg.address == "/disconnect" ) {
-                    "" => dest;      
+                    "junk" => dest;      
+                    oOut.dest( dest, 47120 ); 
                 } else if( msg.address == "/connect" ) {
                     msg.getString(0) => dest;
+                    oOut.dest( dest, 47120 ); 
                 } else if( msg.address == "/tog" ) {
                     if( tog > 0 ) {
                         0 => tog;
                         <<< "\n\tYou have been silenced. You can still affect your fellows, however.\n","" >>>;
                     } else {
                         1 => tog;
-                        <<< "\n\tYou're voice has been restored!","">>>;
+                        <<< "\n\tYour voice has been restored!","">>>;
                     }
                 }
             }
@@ -39,8 +41,7 @@ public class ChainOut extends Chugen {
 
     fun void send( string name ) {
         while( samp => now ) {
-            if( dest != "" ) {
-                oOut.dest( dest, 47120 ); 
+            if( dest != "junk" ) {
                 oOut.start( "/sig" );
                 oOut.add( name );
                 oOut.add( sig );

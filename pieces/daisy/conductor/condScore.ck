@@ -17,9 +17,9 @@ Machine.add( d + "source.ck" ) => int source;
 Machine.add( d + "cond.ck" ) => int cond;
 
 string commands;
-<<<"\n\n\n\t\tRUN THIS FILE IN A LOOPING VM: chuck condScore.ck --loop\n\n","">>>;
-<<<"\tSupport files now loaded. Use the 'ctls.ck' file to send commands:\n","">>>;
-"\t\taddMem:name:ip - to add member and ip\n" +=> commands;
+<<<"\n\n\n\t\t\t\tWelcome to DAISY\n\n","">>>;
+<<<"\tSupport files now loaded. \n\tUse the following at the command line to control Daisy:\n","">>>;
+"\t\taddmem:name:ip - to add member and ip\n" +=> commands;
 "\t\tconnect:from:to - to connect two members\n" +=> commands;
 "\t\tdisconnect:name - to disconnect a member\n" +=> commands;
 "\t\tsend:name - to send the source signal to a member\n" +=> commands;
