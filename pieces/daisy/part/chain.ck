@@ -1,6 +1,6 @@
 public class ChainOut extends Chugen {
     OscOut oOut;
-    string dest;
+    "junk" => string dest;
 
     float sig;
 
