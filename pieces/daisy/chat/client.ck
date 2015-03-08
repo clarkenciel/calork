@@ -74,6 +74,7 @@ public class ChuckleClient {
             k => now;
             while( k.more() ) {
                 k.getchar() => v;
+		//<<< v >>>;
                 if( v >= 97 && v <= 122 )
                     chars[v - 97] +=> txt;
     
@@ -92,10 +93,10 @@ public class ChuckleClient {
                 if( v == 32 )
                     " " +=> txt;
     
-                if( v == 8 && txt.length() )
+                if( (v == 8 || v == 127 ) && txt.length() )
                     txt.substring( 0, txt.length()-1 ) => txt;
     
-                if( v == 13 ) {
+                if( v == 13 || v == 10  ) {
                     //<<< leader,txt,"" >>>;
                     out.start("/msg").add(leader+txt).send();
                     "" => txt;
