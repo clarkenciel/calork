@@ -131,10 +131,11 @@ fun void kbhitListen() {
         k => now;
         while( k.more() ) {
             k.getchar() => kVal;
+	    //<<< kVal >>>;
             if( kVal == 32 ) {
                 <<< "\n\nBPF Q:", b.Q(), "BPF Freq", b.freq(),"Gain:",g.gain(), "\n\n","" >>>;
             }
-            if( kVal == 72 ) {
+            if( kVal == 72 || kVal == 65 ) {
                 if( Q + 1 < 200.0 ) {
                     1 +=> Q;
                     Q => b.Q;
@@ -143,7 +144,7 @@ fun void kbhitListen() {
                     <<< "Maximum Allowed reached:","">>>;
                 }
             }
-            if( kVal == 80 ) {
+            if( kVal == 80 || kVal == 66 ) {
                 if( Q - 1 > 1.0 ) {
                     1 -=> Q;
                     Q => b.Q;
@@ -152,7 +153,7 @@ fun void kbhitListen() {
                     <<< "Minimum Allowed reached:","">>>;
                 }
             }
-            if( kVal == 77 ) {
+            if( kVal == 77 || kVal == 67 ) {
                 if( bFreq + 10 < 15000 ) {
                     10 +=> bFreq;
                     bFreq => b.freq;
@@ -161,7 +162,7 @@ fun void kbhitListen() {
                     <<< "Maximum Allowed reached:","">>>;
                 }
             }
-            if( kVal == 75 ) {
+            if( kVal == 75 || kVal == 68) {
                 if( bFreq - 10.0 > 100 ) {
                     10 -=> bFreq;
                     bFreq => b.freq;
