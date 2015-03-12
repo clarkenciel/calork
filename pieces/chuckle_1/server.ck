@@ -26,11 +26,16 @@ public class ChuckleServer {
             out[ out.size() -1 ].dest( ips[ names[names.size()-1] ], cliPort );
             
             "\n\t"+names[names.cap()-1]+" has entered" => lmsg;
+            <<< lmsg+"\n","">>>;
             snd( "all", lmsg );
         } else if( ipCheck(ip) < 1 ) { // if we've seen the name, but not the ip
             ip @=> ips[ name ];
             <<< name, "already stored, changing ip to:",ips[name],"">>>;
-        } // do nothing otherwise
+        } else {// do nothing otherwise
+            "\n\t"+names[names.cap()-1]+" has returned" => lmsg;
+            <<< lmsg+"\n","">>>;
+            snd( "all", lmsg );
+        }
     }
 
     // receive a message from a meber
@@ -44,10 +49,13 @@ public class ChuckleServer {
 
         while( in => now ) {
             while( in.recv(m) ) {
+                <<< "untouched msg:",m.getString(0),"" >>>;
                 atParse( m.getString(0) ) @=> msg; // parse message for @ commands
-                <<< "received message:",msg,"">>>;
                 getLeader( msg[0] ) @=> notAt;
                 notAt[1] @=> msg[0];
+                for( int i; i < msg.size(); i++ ) 
+                    <<< msg[i],"">>>;
+                
                 for( int i; i < msg.cap(); i++ ) {
                     getDest( msg[i] ) @=> out; // parse for addresses and messages
                     <<< "From", notAt[0], " ", out[1], "=>", out[0],"" >>>;
@@ -61,25 +69,20 @@ public class ChuckleServer {
     // pass a message out to the clients
     fun void snd( string dest, string leader, string mout ) {
         getInd( dest, names ) => int idx;
+        <<< "dest",dest,"leader",leader,"message",mout,"">>>;
         if( dest == "all" && mout != " " ) {
             for( int i; i < out.cap(); i ++ ) {
-                if( idx != i )
+                if( idx != 0 ) 
                     out[i].start("/"+dest).add(leader +" "+mout).send();
             }
-        } else {
-            if( idx >= 0 )
-                out[ idx ].start( "/"+dest ).add(mout).send();
-        }
+        } else if( idx >= 0 ) 
+            out[ idx ].start( "/"+dest ).add(mout).send();
     }
 
     fun void snd( string dest, string mout ) {
-        getInd( dest, names ) => int idx;
         if( dest == "all" ) {
             for( int i; i < out.cap(); i++ ) {
-                if( idx != i )
-                    out[i].start("/"+dest).add(mout).send();
-                else if( idx >= 0 )
-                    out[ idx ] .start( "/"+dest ).add(mout).send();
+                out[ i ] .start( "/"+dest ).add(mout).send();
             }
         }
     }
@@ -105,19 +108,23 @@ public class ChuckleServer {
     fun int nameCheck( string name ) {
         int out;
         for( int i; i < names.cap(); i++ ) {
-            if( names[i] == name )
-                1 => out; break;
+            <<< names[i], name, "" >>>;
+            if( names[i] == name ) {
+                1 => out; 
+                break;
+            }
         }
         return out;
-    
     }
 
     // Check if an IP has already been added
     fun int ipCheck( string ip ) {
         int out;
         for( int i; i < names.cap(); i ++ ) {
-            if( ips[ names[i] ] == ip )
-                1 => out; break;
+            if( ips[ names[i] ] == ip ) {
+                1 => out; 
+                break;
+            }
         }
         return out;
     }
@@ -125,10 +132,15 @@ public class ChuckleServer {
     // Get index of item in array
     fun int getInd( string s, string a[] ) {
         -1 => int ind;
+        string test;
         for( int i; i < a.cap(); i ++ ) {
-            if( a[i] == s )
+            a[i].lower() => test;
+            test.trim();
+            <<< "comparing,",test,s,"">>>;
+            if( test == s )
                 i => ind; break;
         }
+        <<< "returning:", ind,"">>>;
         return ind;
     }
     // get message leader
@@ -151,7 +163,8 @@ public class ChuckleServer {
             t.substring( colonInd+1 ) @=> out[1]; // the message
         }       
         
-        if( out[0] != "" ) return out;
+        if( out[0] != "" )
+            return out;
         else {
             "all" @=> out[0];
             s @=> out[1];
@@ -166,14 +179,14 @@ public class ChuckleServer {
         int atIdx[0]; int idx;
         
         // get indexes of @ symbols
-        while( s.find(at, idx) >= 0 ) {
+        while( idx < s.length() && s.find(at, idx) > 0 ) {
             atIdx.size( atIdx.size()+1 );
             s.find(at, idx) @=> atIdx[ atIdx.size()-1 ];
-            atIdx[ atIdx.size()-1 ] + 1 @=> idx;
+            atIdx[ atIdx.size()-1 ] +1  => idx;
         }
         
         // add pre-first-@ part of message
-        if( atIdx.cap() > 0 && s.substring( 0, atIdx[0] ).length() > 0 ) {
+        if( atIdx.cap() > 0  && s.substring(0, atIdx[0]).length() > 0 ) { // validate @ after idx 0 and non-blank string
             out.size( out.size()+1 );
             s.substring( 0, atIdx[0] ) @=> out[ out.size()-1 ];
         }
