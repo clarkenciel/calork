@@ -4,7 +4,7 @@ public class ChainOut extends Chugen {
 
     float sig;
 
-    0 => float tog;
+    0 => float tog => float tmpTog;
     47120 => int port;
     
     fun float tick( float in ) {
@@ -28,10 +28,13 @@ public class ChainOut extends Chugen {
                     oOut.dest( dest, 47120 ); 
                 } else if( msg.address == "/tog" ) {
                     if( tog > 0 ) {
+                        tog => tmpTog;
                         0 => tog;
                         <<< "\n\tYou have been silenced. You can still affect your fellows, however.\n","" >>>;
                     } else {
-                        1 => tog;
+                        while( tog < tmpTog ) {
+                            0.05 +=> tog;
+                        }
                         <<< "\n\tYour voice has been restored!","">>>;
                     }
                 }
