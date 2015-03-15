@@ -49,16 +49,14 @@ public class ChuckleServer {
 
         while( in => now ) {
             while( in.recv(m) ) {
-                <<< "untouched msg:",m.getString(0),"" >>>;
+                //<<< "untouched msg:",m.getString(0),"" >>>;
                 atParse( m.getString(0) ) @=> msg; // parse message for @ commands
                 getLeader( msg[0] ) @=> notAt;
                 notAt[1] @=> msg[0];
-                for( int i; i < msg.size(); i++ ) 
-                    <<< msg[i],"">>>;
                 
                 for( int i; i < msg.cap(); i++ ) {
                     getDest( msg[i] ) @=> out; // parse for addresses and messages
-                    <<< "From", notAt[0], " ", out[1], "=>", out[0],"" >>>;
+                    <<< notAt[0], "=>", out[0]+":", out[1],"" >>>;
                     if( out[1].length() > 0 )
                         snd( out[0], notAt[0], out[1] ); // send messages
                 }
@@ -69,7 +67,7 @@ public class ChuckleServer {
     // pass a message out to the clients
     fun void snd( string dest, string leader, string mout ) {
         getInd( dest, names ) => int idx;
-        <<< "dest",dest,"leader",leader,"message",mout,"">>>;
+        //<<< "dest",dest,"leader",leader,"message",mout,"">>>;
         if( dest == "all" && mout != " " ) {
             for( int i; i < out.cap(); i ++ ) {
                 if( idx != 0 ) 
@@ -108,7 +106,7 @@ public class ChuckleServer {
     fun int nameCheck( string name ) {
         int out;
         for( int i; i < names.cap(); i++ ) {
-            <<< names[i], name, "" >>>;
+            //<<< names[i], name, "" >>>;
             if( names[i] == name ) {
                 1 => out; 
                 break;
@@ -136,11 +134,11 @@ public class ChuckleServer {
         for( int i; i < a.cap(); i ++ ) {
             a[i].lower() => test;
             test.trim();
-            <<< "comparing,",test,s,"">>>;
+            //<<< "comparing,",test,s,"">>>;
             if( test == s )
                 i => ind; break;
         }
-        <<< "returning:", ind,"">>>;
+        //<<< "returning:", ind,"">>>;
         return ind;
     }
     // get message leader
