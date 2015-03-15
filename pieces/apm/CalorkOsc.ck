@@ -38,11 +38,11 @@ public class CalorkOsc {
     public void myAddr(string id, int lp) {
         id => my_addr;
         // sets in.port to lp
-        lp => listening_port => in.port;
+        //lp => listening_port => in.port;
         // sets port to listen for all messages
-        in.listenAll();
+        //in.listenAll();
         // allows to you to "send" to yourself
-        addIp("local", id);        
+        //addIp("local", id);        
     }
  
     // searches for the index location of an array

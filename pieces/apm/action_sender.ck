@@ -9,21 +9,21 @@ CalorkOsc c;
 
 c.myAddr("/eric");
 
-c.addIp("localhost", "/test");
-// c.addIp("ip", "/name");
-// c.addIp("ip", "/name");
-// c.addIp("ip", "/name");
+c.addIp("10.0.0.2", "/shauryja");
+//c.addIp("10.0.0.3", "/shauryja");
+//c.addIp("10.0.0.7", "/mike");
+//c.addIp("10.0.0.5", "/justin");
 
 c.setParams(["/0total", "/1total", "/2total", "/3total",
 "/4total", "/5total", "/6total", "/0apm", "/1apm", "/2apm",
 "/3apm", "/4apm", "/5apm", "/6apm", "/atotal", "/vtotal", "/btotal", 
 "/aapm", "/vapm", "/bapm", "/mltotal", "/mrtotal", "/mmtotal",
-"/mlapm", "/mrapm", "/mmapm" ]);
+"/mlapm", "/mrapm", "/mmapm", "/mx" ]);
 
-spork ~ c.recv();
+//spork ~ c.recv();
 
 // durations 
-120 => int num_durs;
+30 => int num_durs;
 dur durations[num_durs];
 
 for (int i; i < num_durs; i++) {
@@ -119,6 +119,9 @@ fun void mouseInput() {
                 overallStatistics();
                 statistics(idx, mouse_total, mouse_apm, mouse_total_addr[idx], mouse_apm_addr[idx]);
             }
+            else { 
+                c.send("/all", "/mx", msg.fdata);
+            }
         }
     }
 }
@@ -153,6 +156,16 @@ fun void counter(int idx, float apm[]) {
     durations[idx] => now;;    
     1 * (1::minute/durations[idx]) -=> apm[idx];
 }
+                             
+<<< " ", "" >>>;
+<<< "           ******             ", "" >>>;
+<<< "  ******  /**///** ********** ", "" >>>;
+<<< " //////** /**  /**//**//**//**", "" >>>;
+<<< "  ******* /******  /** /** /**", "" >>>;
+<<< " **////** /**///   /** /** /**", "" >>>;
+<<< "//********/**      *** /** /**", "" >>>;
+<<< " //////// //      ///  //  // ", "" >>>;
+<<< " ", "" >>>;
 
 while (true) {
     1::second => now;
