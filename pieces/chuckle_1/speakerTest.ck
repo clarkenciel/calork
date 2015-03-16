@@ -120,7 +120,7 @@ s.disconnect(p1);s2.disconnect(p2);
 fun void play( Speaker s ) {
     int i, idx, idx2;
     2 => int meas;
-    while( 50::ms => now ) {
+    while( true ) {
         if( i%meas != 0 )  {
             Math.random2(0, cmds.cap()-1) => idx;
             s.speak( cmds[idx]);
