@@ -1,37 +1,27 @@
 CALORK
 ======
-PRESENTED BY THE HERB ALPERT SCHOOL OF MUSIC @ THE CALIFORNIA INSTITUTE OF THE ARTS
------------------------------------------------------------------------------------
-MARCH 16, 2015
---------------
+### PRESENTED BY THE HERB ALPERT SCHOOL OF MUSIC @ THE CALIFORNIA INSTITUTE OF THE ARTS
+##### MARCH 16, 2015
 
-CASCADE (CHUCKLE_1) - CLARKE
-----------------------------
+#### CASCADE (CHUCKLE_1) - CLARKE
 
 
-STASIS PATTERNS - HEEP
-----------------------
+#### STASIS PATTERNS - HEEP
 
 
-APM - HEEP/PARK
----------------
+#### APM - HEEP/PARK
 
 
-= BRIEF INTERMISSION =
-----------------------
+#### = BRIEF INTERMISSION =
 
-SLOW SOUNDS - PARK
-------------------
+#### SLOW SOUNDS - PARK
 
 
-TRACER (DAISY_1) - CLARKE
--------------------------
+#### TRACER (DAISY_1) - CLARKE
 
 
-GHOST - HEEP
-------------
+#### GHOST - HEEP
 
 
-PERFORMERS
-==========
+### PERFORMERS
 ERIC HEEP, JUSTIN SCHEID, ED PARK, MIKE LEISZ, SHAURJYA BANERJEE, DANNY CLARKE
