@@ -14,11 +14,11 @@ Starcraft data extraction for sound generation
 
 #### = BRIEF INTERMISSION =
 
-#### SLOW SOUNDS - PARK
+#### LET THE MUSIC RISE AND FALL AS YOU'D EXPECT, LIKE THE SUN AND THE MOON - PARK
 Slowly moving, smoothly transitioning playback
 
 #### TRACER (DAISY_1) - CLARKE
-Distortion of a sine tone via inter-computer tranmission
+Distortion of a sine tone via inter-computer tranSmission
 
 #### GHOST - HEEP
 A love letter to Vicki
