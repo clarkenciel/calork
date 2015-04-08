@@ -11,11 +11,11 @@ c.myAddr("/eric");
 //Eric's IP ~ 10.0.0.2
 
 // add one IP and address at a time, two string arguments
-c.addIp("10.0.0.3", "/ed");
-c.addIp("10.0.0.6", "/justin");
-c.addIp("10.0.0.7", "/shaurjya");
-c.addIp("10.0.0.5", "/mike");
-c.addIp("10.0.0.9", "/danny");
+c.addIp("10.0.0.7", "/mike");
+c.addIp("10.0.0.9", "/justin");
+c.addIp("10.0.0.4", "/ed");
+c.addIp("10.0.0.8", "/shaurjya");
+c.addIp("10.0.0.3", "/danny");
 
 // you'll have to setup your parameters as an array of strings
 c.setParams(["/g", "/s", "/l", "/f", "/o"]);

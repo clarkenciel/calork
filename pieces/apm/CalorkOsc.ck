@@ -4,7 +4,7 @@
 public class CalorkOsc {
     // sets max number of OscOut objects
     10 => int NUM_ADDRS;
-    30 => int MAX_PARAMETERS;
+    35 => int MAX_PARAMETERS;
 
     OscOut out[NUM_ADDRS];
     OscMsg out_msg[NUM_ADDRS];
@@ -139,6 +139,12 @@ public class CalorkOsc {
             val => params[param][argAddr(my_addr)];
             e[argAddr(addr)].signal();
         }
+        // sends with parameter as the address
+        else if (addr == "/param") {
+            out[idx].start(param); 
+            out[idx].add(val); 
+            out[idx].send(); 
+        }
         // send to a random player 
         else if (addr == "/random") {
             Math.random2(0, addrs.cap() - 1) => idx;
@@ -150,10 +156,17 @@ public class CalorkOsc {
         // send to all players
         else if (addr == "/all") {
             for (int i; i < addrs.cap(); i++) {
-                out[i].start(my_addr); 
-                out[i].add(param);
-                out[i].add(val); 
-                out[i].send();
+                if (addrs[i] == "/param") {
+                    out[i].start(param); 
+                    out[i].add(val); 
+                    out[i].send(); 
+                }
+                else {
+                    out[i].start(my_addr); 
+                    out[i].add(param);
+                    out[i].add(val); 
+                    out[i].send();
+                }
             }
         }
         // sends to a specified individual player
