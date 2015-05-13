@@ -9,15 +9,18 @@ CalorkOsc c;
 
 c.myAddr("/eric");
 
-//c.addIp("10.0.0.7", "/shauryja");
-//c.addIp("10.0.0.9", "/danny");
-c.addIp("10.40.2.152", "/mike");
-c.addIp("10.40.16.200", "/justin");
+c.addIp("10.40.11.109", "/param");
+//c.addIp("10.0.0.8", "/shauryja");
+//c.addIp("10.0.0.3", "/danny");
+//c.addIp("10.0.0.7", "/mike");
+//c.addIp("10.0.0.9", "/justin");
 
-c.setParams(["/0total", "/1total", "/2total", "/3total",
-"/4total", "/5total", "/6total", "/0apm", "/1apm", "/2apm",
-"/3apm", "/4apm", "/5apm", "/6apm", "/atotal", "/vtotal", "/btotal", 
-"/aapm", "/vapm", "/bapm", "/mltotal", "/mrtotal", "/mmtotal",
+c.setParams([
+"/0total", "/1total", "/2total", "/3total", "/4total", "/5total", "/6total", 
+"/0apm", "/1apm", "/2apm", "/3apm", "/4apm", "/5apm", "/6apm", 
+"/atotal", "/btotal", "/dtotal", "/etotal", "/stotal", "/vtotal", 
+"/aapm", "/bapm", "/dapm", "/eapm", "/sapm", "/vapm", 
+"/mltotal", "/mrtotal", "/mmtotal",
 "/mlapm", "/mrapm", "/mmapm", "/mx" ]);
 
 //spork ~ c.recv();
@@ -44,14 +47,14 @@ int num_total[7];
 float num_apm[7][num_durs];
 
 // character ascii
-[65, 66, 86, 83, 69] @=> int char[];
+[65, 66, 68, 69, 83, 86] @=> int char[];
 
 // character addresses
-["/atotal", "/vtotal", "/btotal", "/stotal", "/etotal"] @=> string char_total_addr[];
-["/aapm", "/vapm", "/bapm", "/sapm", "/eapm"] @=> string char_apm_addr[];
+["/atotal", "/btotal", "/dtotal", "/etotal", "/stotal", "/vtotal"] @=> string char_total_addr[];
+["/aapm", "/bapm", "/dapm", "/eapm", "/sapm", "/vapm"] @=> string char_apm_addr[];
 
-int char_total[5];
-float char_apm[5][num_durs];
+int char_total[6];
+float char_apm[6][num_durs];
 
 ["/mltotal", "/mrtotal", "/mmtotal"] @=> string mouse_total_addr[];
 ["/mlapm", "/mrapm", "/mmapm"] @=> string mouse_apm_addr[];
